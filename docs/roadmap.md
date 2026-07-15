@@ -40,8 +40,17 @@ speculatively in any v1.0 sprint:
   repository-static content, per `docs/shopify-architecture.md`. The
   content data-access boundary keeps this reversible, but no CMS
   integration is built now.
-- **Search.** No site search page or search UI in v1.0; Object/Chapter/
-  Journal discovery happens via browsing and navigation only.
+- **Search, filtering, sorting and faceted navigation.** No site search
+  UI, and the Objects directory carries no filter/sort/facet controls in
+  v1.0; Object/Chapter/Journal discovery happens via browsing and
+  navigation only (see `docs/information-architecture.md`).
+- **Family browsing pages.** Family is cross-reference-only in v1.0
+  (used by "Continue Exploring"); no `/families/*` route or dedicated
+  Family archive is built (see `docs/shopify-architecture.md`).
+- **Archive-override Metafield for Objects.** v1.0 uses Shopify product
+  status alone to determine archived/unavailable state (see
+  `docs/shopify-architecture.md`); a supplementary override Metafield is
+  not introduced until a concrete need arises.
 - **Accounts / login / order history.** No customer-facing account area.
   Checkout (Acquire) uses Shopify's standard guest/hosted checkout flow.
 - **Wishlisting / saved Objects.** No save-for-later feature.
@@ -83,24 +92,33 @@ depend on the Shopify Storefront client existing first).
    layout, replacing the Sprint 2 homepage preview's lack of navigation.
    Flat structure only, per "Deferred beyond v1.0."
 3. **Sprint 6 — Objects.** Object directory and individual Object page:
-   `ObjectCard`, `ObjectGrid`, `ObjectPassport`, `VariantSelector`,
-   `AcquireButton`, `ArchivedNotice`, `CrossReference`. This is the
+   `ObjectCard` (preview only — no quick-acquire), `ObjectGrid`,
+   `LoadMore`, `ObjectGallery` (including the pan/zoom and advanced
+   interaction work deferred from the Sprint 3 documentation-only
+   pattern definition), `ObjectPassport`, `VariantSelector`,
+   `AcquireButton` (Object page only), `ArchivedNotice`,
+   `CrossReference`. The directory remains browse-only — no filtering,
+   sorting, or search (see "Deferred beyond v1.0"). This is the
    commerce-critical path and the first full exercise of the Shopify
    ownership model, so it comes before Chapters.
 4. **Sprint 7 — Chapters.** Chapter archive and individual Chapter pages:
-   `ChapterCard`, `ChapterDetail`, campaign/editorial presentation. Depends
-   on Objects existing (a Chapter page renders an `ObjectGrid` of its
-   members).
+   `ChapterCard`, `ChapterDetail`, `LoadMore`, campaign/editorial
+   presentation. Incomplete Chapters (missing required Metafields) are
+   excluded from the archive and navigation but still resolve at their
+   direct URL in a controlled unavailable state (see
+   `docs/shopify-architecture.md`). Depends on Objects existing (a
+   Chapter page renders an `ObjectGrid` of its members).
 5. **Sprint 8 — Home (production).** Replace the Sprint 2 homepage
-   preview with the real Home: dynamic hero (including the
-   current-selection precedence logic from
-   `docs/shopify-architecture.md`), Current Chapter, Featured Objects,
-   Journal-highlights placeholder (Journal itself isn't built yet — see
-   Sprint 9), The House preview. This is sequenced after Objects/Chapters
-   because Home composes them.
-6. **Sprint 9 — Journal.** Journal index and individual entries. Update
-   Home's Journal highlights module (stubbed in Sprint 8) to pull real
-   entries.
+   preview with the real Home: `HomeHero` (composing `EditorialHero`,
+   not a separate implementation) driven by the deterministic Home
+   feature selection rule in `docs/shopify-architecture.md` (type
+   precedence, same-type tie-break, static fallback), Current Chapter,
+   Featured Objects, Journal-highlights placeholder (Journal itself
+   isn't built yet — see Sprint 9), The House preview. This is
+   sequenced after Objects/Chapters because Home composes them.
+6. **Sprint 9 — Journal.** Journal index and individual entries, using
+   `LoadMore` for the index. Update Home's Journal highlights module
+   (stubbed in Sprint 8) to pull real entries.
 7. **Sprint 10 — The House.** About, Founder, Manifesto (repository-
    static content), Collaborations, Shows, Press (Metaobject-backed).
    Sequenced later since it's the least commerce-critical section and
@@ -111,9 +129,10 @@ depend on the Shopify Storefront client existing first).
    blocked on anything.
 9. **Sprint 12+ — Hardening.** Cross-cutting concerns not owned by any
    single page: SEO metadata, sitemap, analytics, accessibility pass,
-   performance/image optimization audit, `/legal/*` pages, 404 page
-   styling. Scoped precisely when reached, based on what the prior
-   sprints actually need.
+   performance/image optimization audit, `/legal/*` pages (repository-owned
+   static content, per `docs/shopify-architecture.md`), 404 page styling.
+   Scoped precisely when reached, based on what the prior sprints
+   actually need.
 
 This sequence assumes each sprint ships independently reviewable,
 working functionality rather than long-lived partial features — consistent

@@ -30,47 +30,83 @@ live in two places, this document (or its extension, when a later sprint
 needs a field not yet listed) is where that's decided — not a per-page
 judgment call.
 
+## Metafield and Metaobject notation
+
+Metafields below are written as `namespace.key` for brevity. A Shopify
+Metafield is always an explicit `(namespace, key)` pair — never a nested
+path or a wildcard. For example, `tt_house.editorial_copy` means
+namespace `tt_house`, key `editorial_copy`. Where a content type has
+several related fields (e.g. the Object Passport), each field is its own
+explicit key under one namespace — namespace `tt_house`, keys
+`passport_materials`, `passport_origin`, `passport_construction`,
+`passport_care` — not a wildcard `tt_house.passport.*`. Chapter-level
+fields use their own namespace, `tt_house_chapter`, to keep them distinct
+from Object-level fields. Provisioning these namespace/key pairs in
+Shopify Admin is an implementation step for the sprint that first needs
+them (see `docs/roadmap.md`).
+
 ## Ownership by content type
 
 ### Objects (Shopify Product)
 
-| Data                                                                    | Owner                                    | Mechanism                                                                                                          |
-| ----------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Price, compare-at price                                                 | Shopify                                  | Product/Variant                                                                                                    |
-| Variants (size, etc.)                                                   | Shopify                                  | Product Variants                                                                                                   |
-| Inventory/availability                                                  | Shopify                                  | Inventory API                                                                                                      |
-| Checkout/Acquire flow                                                   | Shopify                                  | Storefront API Cart/Checkout                                                                                       |
-| Primary product media (photos used in Acquire flow)                     | Shopify                                  | Product Media                                                                                                      |
-| Object Passport (materials, origin, construction, care)                 | Repository-defined shape, Shopify-stored | Metafields, namespace `tt_house.passport.*`                                                                        |
-| Chapter assignment                                                      | Shopify                                  | Collection membership                                                                                              |
-| Family assignment (a cross-Chapter grouping, e.g. recurring silhouette) | Shopify                                  | Metafield, `tt_house.family` (reference to a Metaobject)                                                           |
-| Editorial/archive copy (distinct from Shopify's product description)    | Shopify-stored                           | Metafield, `tt_house.editorial_copy` (rich text)                                                                   |
-| Archived/unavailable state                                              | Shopify                                  | Product status + Metafield override if the house needs a state Shopify's native status doesn't capture (see below) |
+| Data                                                                    | Owner                                    | Mechanism                                                                                                                                     |
+| ----------------------------------------------------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Price, compare-at price                                                 | Shopify                                  | Product/Variant                                                                                                                               |
+| Variants (size, etc.)                                                   | Shopify                                  | Product Variants                                                                                                                              |
+| Inventory/availability                                                  | Shopify                                  | Inventory API                                                                                                                                 |
+| Checkout/Acquire flow                                                   | Shopify                                  | Storefront API Cart/Checkout                                                                                                                  |
+| Primary product media (photos used in Acquire flow)                     | Shopify                                  | Product Media                                                                                                                                 |
+| Object Passport (materials, origin, construction, care)                 | Repository-defined shape, Shopify-stored | Metafields: namespace `tt_house`, keys `passport_materials`, `passport_origin`, `passport_construction`, `passport_care` (see notation above) |
+| Chapter assignment                                                      | Shopify                                  | Collection membership — exactly one Collection per Chapter in v1.0                                                                            |
+| Family assignment (a cross-Chapter grouping, e.g. recurring silhouette) | Shopify                                  | Metafield, `tt_house.family` (reference to a Metaobject)                                                                                      |
+| Editorial/archive copy                                                  | Shopify-stored                           | Metafield, `tt_house.editorial_copy` (rich text)                                                                                              |
+| Archived/unavailable state                                              | Shopify                                  | Shopify product status only in v1.0 (e.g. archived / draft / active). No separate archive-override Metafield is introduced yet.               |
 
 **Permanent URLs:** an Object's route (`/objects/[object]`) resolves by
-handle. If a Product is archived or set unavailable in Shopify, the page
-must still render — Next.js queries the Product regardless of status and
-renders `ArchivedNotice` (see `docs/component-map.md`) instead of
-`VariantSelector`/`AcquireButton` when the status indicates it. The
-Product is never deleted from Shopify as a way to "remove" it from the
-site; if a piece must stop resolving entirely, that is a deliberate,
-separate decision outside this architecture.
+handle regardless of Shopify product status. If a Product's status
+indicates it is archived or otherwise unavailable, the page still
+renders — Next.js queries the Product regardless of status and renders
+`ArchivedNotice` (see `docs/component-map.md`) instead of
+`VariantSelector`/`AcquireButton`. Shopify product status (see table
+above) is the sole v1.0 source for this determination; no archive-override
+Metafield exists yet. The Product is never deleted from Shopify as a way
+to "remove" it from the site; if a piece must stop resolving entirely,
+that is a deliberate, separate decision outside this architecture.
+
+**Family is cross-reference-only in v1.0.** It powers "Continue
+Exploring" matching only — there is no Family browsing page or route
+(no `/families/*`), and none is built speculatively (see
+`docs/roadmap.md`).
+
+**Editorial copy source of truth.** The `tt_house.editorial_copy`
+Metafield is the only source for an Object's TT House editorial/archive
+copy. Shopify's native product description field must not be used for
+this content — leave it empty or reserve it for internal/Admin
+reference only, so there is never more than one place an editor could
+plausibly update "the copy."
 
 ### Chapters (Shopify Collection + editorial layer)
 
-| Data                                      | Owner          | Mechanism                                                                                     |
-| ----------------------------------------- | -------------- | --------------------------------------------------------------------------------------------- |
-| Membership (which Objects belong)         | Shopify        | Collection (manual or automated/rule-based)                                                   |
-| Chapter title, handle                     | Shopify        | Collection title/handle — must match the public Chapter name                                  |
-| Campaign imagery, editorial story copy    | Shopify-stored | Metafields on the Collection, namespace `tt_house.chapter.*` (e.g. `campaign_media`, `story`) |
-| "Current Chapter" flag (surfaced on Home) | Shopify-stored | Metafield, `tt_house.chapter.is_current` (boolean) — see "Hero and Current selection" below   |
-| Chapter archive ordering                  | Shopify-stored | Metafield, `tt_house.chapter.sort_order`, or Collection-level custom sort                     |
+| Data                                      | Owner          | Mechanism                                                                                                                                                                      |
+| ----------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Membership (which Objects belong)         | Shopify        | Collection (manual or automated/rule-based) — exactly one Collection per Chapter in v1.0                                                                                       |
+| Chapter title, handle                     | Shopify        | Collection title/handle. The Chapter's public slug is always identical to the Collection handle in v1.0 — no divergence is permitted (see `docs/information-architecture.md`). |
+| Campaign imagery, editorial story copy    | Shopify-stored | Metafields on the Collection: namespace `tt_house_chapter`, keys `campaign_media` and `story`                                                                                  |
+| "Current Chapter" flag (surfaced on Home) | Shopify-stored | Metafield: namespace `tt_house_chapter`, key `is_current` (boolean) — see "Home feature selection" below                                                                       |
+| Chapter archive ordering                  | Shopify-stored | Metafield: namespace `tt_house_chapter`, key `sort_order` — or Collection-level custom sort                                                                                    |
 
 A Chapter page is never generated purely from a Collection's default
 fields — `title`, `description` and product list are not sufficient; the
 Metafields above are required for the page to render in full TT House
 presentation. A Collection without them is treated as incomplete, not as
 a valid minimal Chapter.
+
+An incomplete Chapter must not appear in `/chapters` (the archive) or in
+any navigation/listing surface. Its direct route
+(`/chapters/[chapter]`) still resolves rather than 404ing, rendering a
+controlled unavailable state (no campaign/story content, no Object grid)
+instead of a partial or broken Chapter page — the same permanent-URL
+discipline used for archived Objects above.
 
 ### The House (about, founder, manifesto, collaborations, shows, press)
 
@@ -107,6 +143,12 @@ migration is possible without touching page components.
 | ------------------------------------- | ---------- | ---------------------------------------------------------------------------------- |
 | Channel copy, addresses, social links | Repository | Static content — changes rarely, no admin-editing need justifies a Shopify record. |
 
+### Legal
+
+| Data                                  | Owner      | Mechanism                                                                                                                                                  |
+| ------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Privacy, terms, shipping/returns copy | Repository | Static content — repository-owned, changes rarely, no admin-editing need justifies a Shopify record; see `/legal/*` in `docs/information-architecture.md`. |
+
 ## Content data-access boundary
 
 All Shopify reads used for editorial rendering (Chapters, Objects,
@@ -136,32 +178,45 @@ No code implementing this boundary is written in Sprint 3 — this section
 specifies the shape for the sprint that first needs it (see
 `docs/roadmap.md`).
 
-## Hero and "Current Chapter" selection
+## Home feature selection ("current" item)
 
-The Home dynamic hero and the "Current Chapter" module both need a
-single source of truth for "what's current right now," since a Chapter,
-collaboration, show, editorial or announcement can each be a valid hero
-subject:
+Exactly one item is the Home dynamic hero's subject at any time — this is
+a hard rule, not an editorial aspiration. The selection is fully
+deterministic:
 
-- Each candidate content type carries its own `is_current` /
-  `is_featured`-style Metafield (Chapter, Collaboration, Show) or is
-  surfaced via `listJournalEntries()`'s natural recency ordering
-  (Journal).
-- Exactly one item across all candidate types should be marked current
-  for the hero at any time — this is an editorial/operational discipline
-  enforced by whoever curates Shopify Admin, not a technical constraint
-  this architecture can guarantee. The Next.js implementation (built in
-  a later sprint) should pick a deterministic precedence order (e.g.
-  Chapter > Collaboration/Show > Journal > fallback) for the case where
-  more than one item is marked current, so the hero never has ambiguous
-  behavior.
-- The "Current Chapter" module (distinct from the hero) always reflects
-  whichever Chapter has `is_current = true`, independent of what the
-  hero is currently showing.
+1. **Type precedence:** Chapter > Collaboration/Show > Journal > static
+   fallback. The first type with at least one eligible current item wins;
+   lower-precedence types are not considered once a higher one has a
+   match.
+2. **Eligibility within a type:** an item is eligible if its `is_current`
+   Metafield (Chapter, Collaboration, Show) is `true`, or — for Journal,
+   which has no `is_current` field — it is the most recent entry from
+   `listJournalEntries()`.
+3. **Tie-break within a type:** if more than one item of the winning type
+   is marked `is_current = true`, selection uses the most recently
+   updated item (Shopify's `updatedAt`), and the content data-access
+   layer logs a warning — more than one current item of the same type
+   indicates a curation error in Shopify Admin that should be corrected
+   there, not silently tolerated by the app.
+4. **Static fallback:** if no Chapter, Collaboration, Show, or Journal
+   entry is eligible, the hero renders a repository-defined static
+   fallback (house identity, no dynamic content) rather than an empty or
+   broken state.
 
-Exact query/precedence implementation is deferred to the sprint that
-builds the Home hero (see `docs/roadmap.md`) — this section fixes the
-data model, not the selection code.
+The "Current Chapter" module (distinct from the hero) always reflects
+whichever Chapter has `is_current = true`, independent of what the hero
+is currently showing, using the same tie-break rule in (3) if more than
+one Chapter is flagged.
+
+Each candidate type's `is_current` field lives in that type's own
+namespace, following the `tt_house_<type>.is_current` convention (see
+"Metafield and Metaobject notation" above) — e.g. namespace
+`tt_house_chapter`, key `is_current` for Chapters, with Collaboration and
+Show following the same pattern in their own namespaces.
+
+Exact query implementation is deferred to the sprint that builds the
+Home hero (see `docs/roadmap.md`) — this section fixes the data model and
+selection rule, not the selection code.
 
 ## Environment and API surface
 

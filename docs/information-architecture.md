@@ -41,10 +41,9 @@ Notes:
 - `/objects/[object]` is a **permanent URL**: it must keep resolving
   after an Object is archived or made unavailable (see "Permanent Object
   URLs" in the master blueprint and the archived-state rule below).
-- `/chapters/[chapter]` uses the Chapter's own slug, not the underlying
-  Shopify Collection handle if the two ever need to diverge (they should
-  match by convention, but the Chapter page is not required to be
-  reachable only via the Collection handle).
+- `/chapters/[chapter]` uses the Chapter's slug, which is always
+  identical to the underlying Shopify Collection handle in v1.0 — no
+  divergence is permitted (see `docs/shopify-architecture.md`).
 - PR events (under The House) do not get individual permanent detail
   pages in v1.0 — they are entries within `/the-house/press` unless a
   future sprint decides otherwise (see `docs/roadmap.md`).
@@ -114,6 +113,14 @@ Shopify Collections are the product-container primitive underneath; see
 `docs/shopify-architecture.md` for exactly which fields come from Shopify
 versus the repository/Metafields.
 
+Each Chapter maps to exactly one Shopify Collection in v1.0 (see
+`docs/master-blueprint.md`). An incomplete Chapter — one missing the
+required editorial Metafields, see `docs/shopify-architecture.md` — is
+excluded from `/chapters` and from all navigation/listing surfaces. Its
+direct URL still resolves rather than 404ing, but renders a controlled
+unavailable state instead of a partial or broken Chapter page, mirroring
+the archived-Object rule below.
+
 ## Objects — `/objects`
 
 **Responsibility:** the archive of individual pieces, and the only place
@@ -121,17 +128,21 @@ commerce intent (Acquire) occurs.
 
 | Page                | Responsibility                                                                                                                                                                                      |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/objects`          | Object directory — browsable/filterable list of all available Objects.                                                                                                                              |
+| `/objects`          | Object directory — a browsable list of all available Objects. No filtering, sorting, faceted navigation, or search in v1.0 (see `docs/roadmap.md`).                                                 |
 | `/objects/[object]` | Individual Object page: media, price, variant selection and Acquire action (Shopify-controlled) plus Object Passport, materials, Chapter/Family context, and archive content (TT House-controlled). |
 
 Object pages must resolve permanently (see URL structure notes). An
 archived or unavailable Object still renders its page — with an
 archived-state presentation instead of the Acquire action — rather than
-404ing. Exact archived-state UI is a component-level decision for the
-sprint that builds it, not specified here.
+404ing. This determination is based on Shopify product status alone in
+v1.0 (see `docs/shopify-architecture.md`). Exact archived-state UI is a
+component-level decision for the sprint that builds it, not specified
+here.
 
 "Continue Exploring" (never "Related Products") appears on the Object
 page to surface adjacent Objects — same Chapter and/or same Family.
+Family is cross-reference-only in v1.0: it has no dedicated browsing page
+or route.
 
 ## Journal — `/journal`
 
@@ -165,10 +176,10 @@ Not part of the five-section model above, but required for a production
 site. Included here so later sprints don't invent inconsistent routes;
 exact scope/timing is in `docs/roadmap.md`.
 
-| Page                    | Notes                                                                    |
-| ----------------------- | ------------------------------------------------------------------------ |
-| `/legal/*` (or similar) | Privacy, terms, shipping/returns — Shopify-adjacent but house-presented. |
-| `404` / not-found       | Standard Next.js not-found page, editorially styled.                     |
+| Page                    | Notes                                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------ |
+| `/legal/*` (or similar) | Privacy, terms, shipping/returns — repository-owned static pages (see `docs/shopify-architecture.md`). |
+| `404` / not-found       | Standard Next.js not-found page, editorially styled.                                                   |
 
 No search page, account/login area, or cart page is specified in this
 document — see `docs/roadmap.md` for deferred-feature status of each.

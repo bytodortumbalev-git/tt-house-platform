@@ -54,21 +54,23 @@ Composed from Elements and Primitives, reused across multiple sections of
 the site. Patterns know about content shape but not about a specific
 page's data source.
 
-| Pattern              | Used by                                                               | Purpose                                                                                 |
-| -------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `PrimaryNav`         | Root layout                                                           | TT logo + The House / Chapters / Objects / Journal / Contact links.                     |
-| `Footer`             | Root layout                                                           | Site-wide footer: secondary nav, legal links, social links.                             |
-| `ObjectCard`         | Objects directory, Chapter page, Featured Objects, Continue Exploring | Single Object preview: image, name, Price, link to Object page.                         |
-| `ChapterCard`        | Chapter archive, Home (Current Chapter)                               | Single Chapter preview: campaign image, name, short line, link.                         |
-| `JournalCard`        | Journal index, Home (Journal highlights)                              | Single Journal entry preview: image, title, dek, date.                                  |
-| `ObjectGrid`         | Objects directory, Chapter page, Continue Exploring                   | Responsive grid of `ObjectCard`s.                                                       |
-| `EditorialHero`      | Home (dynamic hero), Chapter page, House sub-pages                    | Large image/copy hero block; content-agnostic, driven by props.                         |
-| `ObjectPassport`     | Object page                                                           | Structured display of Object Passport fields (materials, origin, etc).                  |
-| `VariantSelector`    | Object page                                                           | Shopify variant/size selection, feeds `AcquireButton`.                                  |
-| `AcquireButton`      | Object page, ObjectCard (optional quick-acquire)                      | Wraps `Button`; triggers the Acquire (checkout) flow.                                   |
-| `CrossReference`     | Object page, Chapter page, Collaboration/Show pages                   | "Continue Exploring" and House↔Chapter/Object cross-links.                              |
-| `ArchivedNotice`     | Object page                                                           | Renders in place of `VariantSelector`/`AcquireButton` for archived/unavailable Objects. |
-| `ContactChannelList` | Contact page                                                          | Renders the enquiry/press/collaboration/custom/appointment/social entries.              |
+| Pattern              | Used by                                                               | Purpose                                                                                                                                                                                      |
+| -------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PrimaryNav`         | Root layout                                                           | TT logo + The House / Chapters / Objects / Journal / Contact links.                                                                                                                          |
+| `Footer`             | Root layout                                                           | Site-wide footer: secondary nav, legal links, social links.                                                                                                                                  |
+| `ObjectCard`         | Objects directory, Chapter page, Featured Objects, Continue Exploring | Single Object preview: image, name, Price, link to Object page.                                                                                                                              |
+| `ChapterCard`        | Chapter archive, Home (Current Chapter)                               | Single Chapter preview: campaign image, name, short line, link.                                                                                                                              |
+| `JournalCard`        | Journal index, Home (Journal highlights)                              | Single Journal entry preview: image, title, dek, date.                                                                                                                                       |
+| `ObjectGrid`         | Objects directory, Chapter page, Continue Exploring                   | Responsive grid of `ObjectCard`s.                                                                                                                                                            |
+| `EditorialHero`      | Home (dynamic hero), Chapter page, House sub-pages                    | Large image/copy hero block; content-agnostic, driven by props.                                                                                                                              |
+| `ObjectPassport`     | Object page                                                           | Structured display of Object Passport fields (materials, origin, etc).                                                                                                                       |
+| `VariantSelector`    | Object page                                                           | Shopify variant/size selection, feeds `AcquireButton`.                                                                                                                                       |
+| `AcquireButton`      | Object page only                                                      | Wraps `Button`; triggers the Acquire (checkout) flow. Acquire is never exposed from `ObjectCard` or any grid/listing context — see `docs/development-rules.md`.                              |
+| `CrossReference`     | Object page, Chapter page, Collaboration/Show pages                   | "Continue Exploring" and House↔Chapter/Object cross-links.                                                                                                                                   |
+| `ArchivedNotice`     | Object page, Chapter page                                             | Renders in place of `VariantSelector`/`AcquireButton` for archived/unavailable Objects, and in place of campaign/editorial content for an incomplete Chapter resolved at its direct URL.     |
+| `ObjectGallery`      | Object page                                                           | Multiple media images/angles for an Object. Static gallery in v1.0 — pan/zoom and other advanced interaction are deferred to the sprint that builds the Object page (see `docs/roadmap.md`). |
+| `LoadMore`           | Objects directory, Chapter archive, Journal index, Press index        | Reveals additional items in an unbounded listing — the single mechanism all paginated grids use rather than each inventing its own.                                                          |
+| `ContactChannelList` | Contact page                                                          | Renders the enquiry/press/collaboration/custom/appointment/social entries.                                                                                                                   |
 
 Patterns never fetch data themselves — they receive fully-shaped props.
 Data fetching happens in route-level Server Components, which call the
@@ -99,6 +101,13 @@ route files (`page.tsx`) stay declarative.
 | `PressIndex`                                   | `/the-house/press`                        |
 | `ContactPage`                                  | `/contact`                                |
 
+`HomeHero` composes `EditorialHero` with Home-specific data (the selected
+current item — see the Home feature selection rule in
+`docs/shopify-architecture.md`); it is not a separate hero
+implementation. This is the general rule wherever a Section wraps a
+Pattern: a Section supplies data and composition, never a parallel
+visual implementation of a Pattern that already exists.
+
 ## Responsive page templates
 
 Every page template is built from `Container`/`Section` breakpoints
@@ -114,6 +123,10 @@ Used by: Objects directory, Chapter archive, Journal index.
 - **Tablet (`md`–`lg`):** 2-column grid.
 - **Desktop (`≥ lg`):** 3–4 column grid depending on card type
   (`ObjectCard` denser than `ChapterCard`/`JournalCard`).
+- All three listings reveal additional items via the `LoadMore` pattern
+  rather than numbered pagination or unbounded infinite scroll, keeping
+  the browse-only positioning explicit (no filter/sort/search controls —
+  see `docs/roadmap.md`).
 
 ### Detail template
 

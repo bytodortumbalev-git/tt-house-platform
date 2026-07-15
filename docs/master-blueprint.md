@@ -47,7 +47,8 @@ The platform has five top-level sections, matching primary navigation:
    archive plus individual Chapter pages, each carrying a campaign,
    editorial story, and its associated Objects. Shopify Collections are
    the underlying product containers; the visible pages are entirely
-   TT House-designed.
+   TT House-designed. Each Chapter maps to exactly one Shopify Collection
+   in v1.0.
 4. **Objects** — the individual archive pieces. A directory plus
    individual Object pages. Shopify owns media, price, variants,
    inventory and checkout for each Object; TT House owns editorial
@@ -108,10 +109,12 @@ These hold across every sprint from here forward:
 - **Shopify Admin remains the daily operational interface** for the team
   — inventory, fulfilment, order management, and day-to-day product
   upkeep happen there, not in a custom admin UI built in this repo.
-- **Shopify Collections organize Chapters and product groupings.** Every
-  Chapter maps to (at least) one Shopify Collection; a Collection is the
-  product-container primitive, a Chapter is the editorial page built on
-  top of it.
+- **Shopify Collections organize Chapters and product groupings.** In
+  v1.0, every Chapter maps to exactly one Shopify Collection; a
+  Collection is the product-container primitive, a Chapter is the
+  editorial page built on top of it. The Chapter's public slug is always
+  identical to the Collection handle — see
+  `docs/information-architecture.md`.
 - **Shopify Metafields and Metaobjects hold structured TT House data**
   that needs to live alongside commerce data — Object Passport fields,
   Chapter editorial metadata, Family assignment, and similar. See
