@@ -48,7 +48,18 @@ resolving to `src/*`. For example: `import { siteConfig } from "@/config/site"`.
 
 Tailwind CSS v4 is configured via `@import "tailwindcss"` and the `@theme`
 block in `src/app/globals.css` — there is no `tailwind.config.js`. Design
-tokens (colors, fonts) are defined there.
+tokens (colours, typography, spacing, containers, breakpoints, borders,
+motion, z-index) live in `src/styles/tokens.css` and are documented in
+[`docs/design-system.md`](docs/design-system.md). Reusable layout
+primitives (`Container`, `Section`, `Stack`) live in
+`src/components/layout/`.
+
+### Project rules
+
+See [`CLAUDE.md`](CLAUDE.md) and
+[`docs/development-rules.md`](docs/development-rules.md) for the project's
+positioning, UI terminology, and visual/scope rules before adding
+features.
 
 ### Linting and formatting
 

@@ -1,4 +1,4 @@
 export const siteConfig = {
   name: "TT House",
-  description: "TT House Platform.",
+  description: "A luxury editorial fashion house.",
 } as const;

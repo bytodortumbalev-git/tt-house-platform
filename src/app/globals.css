@@ -1,26 +1,101 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/**
+ * Tailwind v4 theme mapping. This wires the framework-agnostic tokens in
+ * src/styles/tokens.css onto Tailwind utility classes (bg-background,
+ * text-foreground, font-display, text-h2, space-y-6, etc.). Do not add
+ * raw colour or size values here — extend src/styles/tokens.css instead.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Colour */
+  --color-background: var(--tt-color-background);
+  --color-foreground: var(--tt-color-foreground);
+  --color-surface: var(--tt-color-surface);
+  --color-surface-inverse: var(--tt-color-surface-inverse);
+  --color-foreground-inverse: var(--tt-color-foreground-inverse);
+  --color-accent: var(--tt-color-accent);
+  --color-accent-foreground: var(--tt-color-accent-foreground);
+  --color-border: var(--tt-color-border);
+  --color-border-strong: var(--tt-color-border-strong);
+  --color-muted: var(--tt-color-muted);
+  --color-archive-white: var(--tt-color-archive-white);
+  --color-chocolate: var(--tt-color-chocolate);
+  --color-midnight-navy: var(--tt-color-midnight-navy);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Typography */
+  --font-display: var(--tt-font-display);
+  --font-body: var(--tt-font-body);
+  --font-mono: var(--tt-font-mono);
+
+  --text-display: var(--tt-text-display);
+  --text-display--line-height: var(--tt-leading-tight);
+  --text-display--letter-spacing: var(--tt-tracking-tight);
+  --text-h1: var(--tt-text-h1);
+  --text-h1--line-height: var(--tt-leading-tight);
+  --text-h2: var(--tt-text-h2);
+  --text-h2--line-height: var(--tt-leading-snug);
+  --text-h3: var(--tt-text-h3);
+  --text-h3--line-height: var(--tt-leading-snug);
+  --text-h4: var(--tt-text-h4);
+  --text-h4--line-height: var(--tt-leading-normal);
+  --text-body-lg: var(--tt-text-body-lg);
+  --text-body-lg--line-height: var(--tt-leading-relaxed);
+  --text-body: var(--tt-text-body);
+  --text-body--line-height: var(--tt-leading-normal);
+  --text-body-sm: var(--tt-text-body-sm);
+  --text-body-sm--line-height: var(--tt-leading-normal);
+  --text-caption: var(--tt-text-caption);
+  --text-caption--line-height: var(--tt-leading-normal);
+  --text-eyebrow: var(--tt-text-eyebrow);
+  --text-eyebrow--line-height: var(--tt-leading-normal);
+  --text-eyebrow--letter-spacing: var(--tt-tracking-wider);
+
+  /* Deliberately overrides Tailwind's default tracking-tight/wide/wider
+     values so every use of those utilities follows the editorial scale. */
+  --tracking-tight: var(--tt-tracking-tight);
+  --tracking-normal: var(--tt-tracking-normal);
+  --tracking-wide: var(--tt-tracking-wide);
+  --tracking-wider: var(--tt-tracking-wider);
+
+  --font-weight-regular: var(--tt-weight-regular);
+  --font-weight-medium: var(--tt-weight-medium);
+  --font-weight-semibold: var(--tt-weight-semibold);
+
+  /* Spacing — base unit only; Tailwind derives its numeric spacing
+     utilities (padding, gap, margin) from this, so they stay in lockstep
+     with the --tt-space-* scale above. */
+  --spacing: var(--tt-space-unit);
+
+  /* Container widths — distinct names from Tailwind's built-in container
+     scale (sm/md/lg/xl/...) so these extend rather than override it. */
+  --container-narrow: var(--tt-container-narrow);
+  --container-content: var(--tt-container-content);
+  --container-base: var(--tt-container-base);
+  --container-wide: var(--tt-container-wide);
+  --container-widest: var(--tt-container-widest);
+
+  /* Breakpoints intentionally not remapped here: CSS forbids var() inside
+     @media conditions, and Tailwind's defaults already equal the
+     --tt-breakpoint-* values documented in src/styles/tokens.css. */
+
+  /* Borders — deliberately overrides Tailwind's default rounded-sm/md
+     values with a tighter, near-square editorial radius scale. */
+  --radius-sm: var(--tt-radius-sm);
+  --radius-md: var(--tt-radius-md);
+
+  /* Motion */
+  --duration-instant: var(--tt-duration-instant);
+  --duration-fast: var(--tt-duration-fast);
+  --duration-base: var(--tt-duration-base);
+  --duration-slow: var(--tt-duration-slow);
+  --duration-slower: var(--tt-duration-slower);
+  --ease-standard: var(--tt-ease-standard);
+  --ease-editorial: var(--tt-ease-editorial);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-body);
 }
