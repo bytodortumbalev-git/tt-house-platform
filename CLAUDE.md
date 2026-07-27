@@ -18,6 +18,12 @@ or a generic Shopify theme.
 Full rules: see `docs/development-rules.md`. Full token/visual reference:
 see `docs/design-system.md`.
 
+**Before making any UI, UX, or product decision, read
+`docs/experience-bible.md`.** It is the design constitution of TT
+House — the philosophy behind the tokens and rules, not a restatement
+of them. Every future feature must pass its Design Test (chapter 16)
+before it ships.
+
 ## Current state (Sprint 2)
 
 This sprint establishes the **design-token foundation and project rules
