@@ -99,3 +99,8 @@ body {
   color: var(--color-foreground);
   font-family: var(--font-body);
 }
+
+:focus-visible {
+  outline: var(--tt-border-width-thick) solid var(--color-accent);
+  outline-offset: var(--tt-border-width-thick);
+}

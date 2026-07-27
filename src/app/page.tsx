@@ -37,7 +37,7 @@ const TYPE_ROLES = [
 
 export default function Home() {
   return (
-    <main className="flex flex-1 flex-col">
+    <>
       <Section spacing="xl">
         <Stack gap="lg">
           <p className="text-eyebrow font-body tracking-wider uppercase text-muted">
@@ -107,6 +107,6 @@ export default function Home() {
           </p>
         </Container>
       </Section>
-    </main>
+    </>
   );
 }

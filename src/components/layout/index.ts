@@ -10,3 +10,11 @@ export type {
   StackAlign,
   StackJustify,
 } from "./Stack";
+export { PageContainer } from "./PageContainer";
+export type { PageContainerProps } from "./PageContainer";
+export { EditorialContainer } from "./EditorialContainer";
+export type { EditorialContainerProps } from "./EditorialContainer";
+export { ReadingContainer } from "./ReadingContainer";
+export type { ReadingContainerProps } from "./ReadingContainer";
+export { FullBleedSection } from "./FullBleedSection";
+export type { FullBleedSectionProps } from "./FullBleedSection";

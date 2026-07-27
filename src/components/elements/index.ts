@@ -1,0 +1,10 @@
+export { Display } from "./Display";
+export type { DisplayProps } from "./Display";
+export { Heading } from "./Heading";
+export type { HeadingProps, HeadingLevel } from "./Heading";
+export { Body } from "./Body";
+export type { BodyProps, BodySize } from "./Body";
+export { Caption } from "./Caption";
+export type { CaptionProps } from "./Caption";
+export { Metadata } from "./Metadata";
+export type { MetadataProps } from "./Metadata";
