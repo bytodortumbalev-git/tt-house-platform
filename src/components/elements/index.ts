@@ -8,3 +8,7 @@ export { Caption } from "./Caption";
 export type { CaptionProps } from "./Caption";
 export { Metadata } from "./Metadata";
 export type { MetadataProps } from "./Metadata";
+export { Link } from "./Link";
+export type { LinkProps } from "./Link";
+export { MediaPlaceholder } from "./MediaPlaceholder";
+export type { MediaPlaceholderProps, MediaAspect } from "./MediaPlaceholder";
