@@ -12,3 +12,7 @@ export { Link } from "./Link";
 export type { LinkProps } from "./Link";
 export { MediaPlaceholder } from "./MediaPlaceholder";
 export type { MediaPlaceholderProps, MediaAspect } from "./MediaPlaceholder";
+export { Button } from "./Button";
+export type { ButtonProps, ButtonVariant } from "./Button";
+export { Tag } from "./Tag";
+export type { TagProps } from "./Tag";
