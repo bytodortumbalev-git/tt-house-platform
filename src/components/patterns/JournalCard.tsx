@@ -1,6 +1,6 @@
 import NextLink from "next/link";
 import { Heading, Body, Tag } from "@/components/elements";
-import type { JournalEntry } from "@/data/journal";
+import type { JournalEntry } from "@/types/journal";
 
 export interface JournalCardProps {
   entry: JournalEntry;
@@ -10,7 +10,7 @@ export interface JournalCardProps {
 export function JournalCard({ entry }: JournalCardProps) {
   return (
     <NextLink
-      href={`/journal/${entry.slug}`}
+      href={`/journal/${entry.handle}`}
       className="flex flex-col gap-3 opacity-100 transition-opacity duration-fast ease-standard hover:opacity-80"
     >
       <Tag>

@@ -2,8 +2,8 @@ import { IndexPageShell, ChapterCard } from "@/components/patterns";
 import { getPublishedChapters } from "@/lib/content";
 
 /** Chapter archive index — every published Chapter, past and current. */
-export function ChapterArchiveGrid() {
-  const chapters = getPublishedChapters();
+export async function ChapterArchiveGrid() {
+  const chapters = await getPublishedChapters();
 
   return (
     <IndexPageShell
@@ -13,7 +13,7 @@ export function ChapterArchiveGrid() {
     >
       <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
         {chapters.map((chapter) => (
-          <ChapterCard key={chapter.slug} chapter={chapter} />
+          <ChapterCard key={chapter.handle} chapter={chapter} />
         ))}
       </div>
     </IndexPageShell>

@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getJournalEntryBySlug, getJournalEntries } from "@/lib/content";
+import { getJournalEntryByHandle, getJournalEntries } from "@/lib/content";
 import { JournalDetail } from "@/components/sections";
 
-export function generateStaticParams() {
-  return getJournalEntries().map((entry) => ({ slug: entry.slug }));
+export async function generateStaticParams() {
+  const entries = await getJournalEntries();
+  return entries.map((entry) => ({ handle: entry.handle }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ handle: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const entry = getJournalEntryBySlug(slug);
+  const { handle } = await params;
+  const entry = await getJournalEntryByHandle(handle);
 
   if (!entry) {
     return { title: "Entry Not Found" };
@@ -28,10 +29,10 @@ export async function generateMetadata({
 export default async function Page({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ handle: string }>;
 }) {
-  const { slug } = await params;
-  const entry = getJournalEntryBySlug(slug);
+  const { handle } = await params;
+  const entry = await getJournalEntryByHandle(handle);
 
   if (!entry) {
     notFound();

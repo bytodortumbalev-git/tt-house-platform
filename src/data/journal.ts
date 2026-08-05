@@ -1,3 +1,5 @@
+import type { JournalEntry } from "@/types/journal";
+
 /**
  * Placeholder Journal data. Journal is the most likely first CMS
  * candidate (see docs/master-blueprint.md) — this shape is kept
@@ -5,19 +7,9 @@
  * src/lib/content/journal.ts, never imported directly by route/page files.
  */
 
-export interface JournalEntry {
-  slug: string;
-  title: string;
-  dek: string;
-  date: string;
-  category: string;
-  author: string;
-  body: string[];
-}
-
 export const journalEntries: JournalEntry[] = [
   {
-    slug: "on-sewing-in-silence",
+    handle: "on-sewing-in-silence",
     title: "On Sewing in Silence",
     dek: "Notes from an atelier that keeps no radio on and no clock in view.",
     date: "3 July 2026",
@@ -30,7 +22,7 @@ export const journalEntries: JournalEntry[] = [
     ],
   },
   {
-    slug: "the-ledger-reopened",
+    handle: "the-ledger-reopened",
     title: "The Ledger, Reopened",
     dek: "Why Chapter III returns to a silhouette the House first drafted three years ago.",
     date: "12 May 2026",
@@ -43,7 +35,7 @@ export const journalEntries: JournalEntry[] = [
     ],
   },
   {
-    slug: "notes-from-the-cutting-table",
+    handle: "notes-from-the-cutting-table",
     title: "Notes from the Cutting Table",
     dek: "A short account of the eleven attempts it took to get one coat right.",
     date: "28 February 2026",
@@ -55,7 +47,7 @@ export const journalEntries: JournalEntry[] = [
     ],
   },
   {
-    slug: "on-keeping-an-archive",
+    handle: "on-keeping-an-archive",
     title: "On Keeping an Archive",
     dek: "Why nothing TT House makes is ever fully retired.",
     date: "9 January 2026",

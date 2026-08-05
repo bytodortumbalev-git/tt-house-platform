@@ -1,18 +1,18 @@
 import { Body, Tag } from "@/components/elements";
-import type { TTObject } from "@/data/objects";
+import type { TTObject } from "@/types/object";
 
 export interface ObjectPassportProps {
   object: TTObject;
   chapterTitle?: string;
 }
 
-/** Structured display of an Object's Passport fields — materials, origin, construction, availability, Chapter. */
+/** Structured display of an Object's Passport fields — materials, origin, construction, edition, Chapter. */
 export function ObjectPassport({ object, chapterTitle }: ObjectPassportProps) {
   const rows: { label: string; value: string }[] = [
     { label: "Material", value: object.material },
     { label: "Origin", value: object.origin },
     { label: "Construction", value: object.construction },
-    { label: "Availability", value: object.availability },
+    { label: "Edition", value: object.edition },
     ...(chapterTitle ? [{ label: "Chapter", value: chapterTitle }] : []),
   ];
 

@@ -1,6 +1,6 @@
 import { Body, Tag } from "@/components/elements";
 import { EditorialDetailShell } from "@/components/patterns";
-import type { JournalEntry } from "@/data/journal";
+import type { JournalEntry } from "@/types/journal";
 
 export interface JournalDetailProps {
   entry: JournalEntry;

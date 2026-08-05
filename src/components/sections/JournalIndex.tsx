@@ -2,8 +2,8 @@ import { IndexPageShell, JournalCard } from "@/components/patterns";
 import { getJournalEntries } from "@/lib/content";
 
 /** Journal index — every entry as a restrained grid, no blog-card styling. */
-export function JournalIndex() {
-  const entries = getJournalEntries();
+export async function JournalIndex() {
+  const entries = await getJournalEntries();
 
   return (
     <IndexPageShell
@@ -13,7 +13,7 @@ export function JournalIndex() {
     >
       <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
         {entries.map((entry) => (
-          <JournalCard key={entry.slug} entry={entry} />
+          <JournalCard key={entry.handle} entry={entry} />
         ))}
       </div>
     </IndexPageShell>

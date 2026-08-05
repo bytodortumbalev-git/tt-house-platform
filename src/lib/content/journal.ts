@@ -1,17 +1,21 @@
 import { journalEntries } from "@/data/journal";
-import type { JournalEntry } from "@/data/journal";
+import type { JournalEntry } from "@/types/journal";
 
 /**
- * Content-access boundary for Journal entries (see the CMS-readiness
- * note in docs/master-blueprint.md — Journal is the most likely first
- * CMS candidate). Route/page components read Journal only through these
- * functions, never by importing src/data/journal.ts directly.
+ * Content-access boundary for Journal entries. Journal remains
+ * repository-local in this sprint — see docs/master-blueprint.md
+ * (Journal is the flagged first CMS/Shopify migration candidate) and
+ * requirement 5 of the Sprint 7 brief. Functions are still async to
+ * keep a uniform call signature with getChapters()/getObjects(), so a
+ * future migration doesn't change call sites.
  */
 
-export function getJournalEntries(): JournalEntry[] {
+export async function getJournalEntries(): Promise<JournalEntry[]> {
   return journalEntries;
 }
 
-export function getJournalEntryBySlug(slug: string): JournalEntry | undefined {
-  return journalEntries.find((entry) => entry.slug === slug);
+export async function getJournalEntryByHandle(
+  handle: string,
+): Promise<JournalEntry | undefined> {
+  return journalEntries.find((entry) => entry.handle === handle);
 }

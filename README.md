@@ -36,8 +36,9 @@ src/
   app/         Next.js App Router routes, layout, and global styles
   components/  Shared React components
   lib/         Framework-agnostic utilities and integrations
-    shopify/   Reserved for the future Shopify Storefront API client (not yet implemented)
-  types/       Shared TypeScript types
+    shopify/   Shopify Storefront API client, queries, and types
+    content/   Content gateway (local/Shopify/auto) that routes actually call
+  types/       Shared TypeScript types (Chapter, TTObject, JournalEntry)
   config/      App-level configuration (e.g. site metadata)
 ```
 
@@ -67,14 +68,28 @@ ESLint uses `eslint-config-next` for Next.js/React/TypeScript rules, with
 `eslint-config-prettier` layered on top to disable stylistic rules that would
 conflict with Prettier. Prettier owns all formatting; ESLint owns correctness.
 
-### Shopify Storefront API (planned)
+### Shopify Storefront API
 
-The project is structured to add a Shopify Storefront API integration later,
-but no Shopify code exists yet:
+Chapters (Shopify Collections) and Objects (Shopify Products) are served
+through a content gateway that can read from Shopify or from local
+placeholder data:
 
-- `src/lib/shopify/` is reserved for the API client, queries, and types.
-- `.env.example` documents the environment variables (`SHOPIFY_STORE_DOMAIN`,
-  `SHOPIFY_STOREFRONT_ACCESS_TOKEN`) that integration will need.
+- `src/lib/shopify/` — the Storefront API client, GraphQL queries, and
+  raw response types. See `src/lib/shopify/README.md` for full setup:
+  required environment variables, how to create a Storefront API access
+  token, content modes (`local` / `shopify` / `auto`), expected
+  Collection/Product Metafields, and current limitations.
+- `src/lib/content/` — the stable functions route/page components
+  actually call (`getChapters`, `getChapterByHandle`, `getCurrentChapter`,
+  `getObjects`, `getObjectByHandle`, `getObjectsByChapter`,
+  `getJournalEntries`, `getJournalEntryByHandle`). These never expose raw
+  Shopify shapes — see `src/types/` for the normalized `Chapter` and
+  `TTObject` types every content source maps into.
+- `.env.example` documents the required variables. Copy it to
+  `.env.local` (gitignored) — never commit real credentials.
+
+Journal remains repository-local in this sprint; no cart, checkout, or
+customer accounts are implemented.
 
 ## Deployment
 

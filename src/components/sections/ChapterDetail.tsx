@@ -5,8 +5,8 @@ import {
   ArchivedNotice,
   ObjectCard,
 } from "@/components/patterns";
-import type { Chapter } from "@/data/chapters";
-import type { TTObject } from "@/data/objects";
+import type { Chapter } from "@/types/chapter";
+import type { TTObject } from "@/types/object";
 
 export interface ChapterDetailProps {
   chapter: Chapter;
@@ -26,7 +26,7 @@ export function ChapterDetail({ chapter, objects }: ChapterDetailProps) {
           !incomplete ? (
             <MediaPlaceholder
               aspect="landscape"
-              label={`${chapter.title} — Chapter campaign image`}
+              label={chapter.heroMedia.alt}
             />
           ) : undefined
         }
@@ -47,7 +47,7 @@ export function ChapterDetail({ chapter, objects }: ChapterDetailProps) {
             <Heading level={2}>Objects in this Chapter</Heading>
             <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
               {objects.map((object) => (
-                <ObjectCard key={object.slug} object={object} />
+                <ObjectCard key={object.handle} object={object} />
               ))}
             </div>
           </div>

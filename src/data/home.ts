@@ -19,20 +19,6 @@ export interface StatementContent {
   body: string;
 }
 
-export interface ChapterPreview {
-  slug: string;
-  number: string;
-  title: string;
-  narrative: string;
-}
-
-export interface FeaturedObjectContent {
-  slug: string;
-  name: string;
-  material: string;
-  availability: string;
-}
-
 export interface HousePreviewContent {
   heading: string;
   copy: string;
@@ -63,21 +49,6 @@ export const arrival: ArrivalContent = {
 export const statement: StatementContent = {
   headline: "A garment considered before it is made.",
   body: "TT House works in small numbers, on our own schedule, with materials chosen to age rather than perform. Every piece belongs first to the archive, and only after to a wardrobe. Nothing leaves the atelier before it is ready — there is no season dictating otherwise.",
-};
-
-export const currentChapter: ChapterPreview = {
-  slug: "the-long-room",
-  number: "Chapter III",
-  title: "The Long Room",
-  narrative:
-    "Named for the corridor of drawers where the House keeps its unfinished patterns, Chapter III returns to outerwear built for stillness — waxed cotton, raw-edged wool, and a single silhouette drafted eleven times until it was right. Nine pieces make up the Chapter; each is numbered, not sized.",
-};
-
-export const featuredObject: FeaturedObjectContent = {
-  slug: "the-long-room-coat",
-  name: "The Long Room Coat",
-  material: "Waxed Scottish cotton, horn buttons, hand-finished seams",
-  availability: "Edition of forty, numbered on the interior placket.",
 };
 
 export const housePreview: HousePreviewContent = {
