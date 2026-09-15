@@ -35,7 +35,7 @@ export async function resolveContent<T>(
   if (mode === "shopify") {
     if (!config) {
       throw new ShopifyConfigError(
-        `SHOPIFY_CONTENT_MODE is "shopify" but Shopify is not configured (${label}). Set NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN and NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN in the environment.`,
+        `SHOPIFY_CONTENT_MODE is "shopify" but Shopify is not configured (${label}). Set SHOPIFY_STORE_DOMAIN and SHOPIFY_STOREFRONT_PRIVATE_TOKEN in the environment.`,
       );
     }
     return readShopify(config);

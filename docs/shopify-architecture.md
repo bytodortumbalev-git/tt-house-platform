@@ -220,16 +220,18 @@ selection rule, not the selection code.
 
 ## Environment and API surface
 
-- **Storefront API** (public, token-scoped): all reads used for
-  rendering pages — Products, Collections, Metafields, Metaobjects,
+- **Storefront API** (server-side, private-token-scoped): all reads used
+  for rendering pages — Products, Collections, Metafields, Metaobjects,
   Cart/Checkout for Acquire. This is the only Shopify API the rendered
-  site calls at request time.
+  site calls at request time. The token is a private Storefront API
+  access token (from the Headless sales channel), kept server-only —
+  never a public/browser-scoped token.
 - **Admin API**: not called from the rendered site. Reserved for
   build-time/tooling use only if a future sprint needs it (e.g. a script
   that provisions Metaobject definitions) — never from a user-facing
   request path.
 - Environment variables (`SHOPIFY_STORE_DOMAIN`,
-  `SHOPIFY_STOREFRONT_ACCESS_TOKEN`) are already documented in
+  `SHOPIFY_STOREFRONT_PRIVATE_TOKEN`) are already documented in
   `.env.example` and `src/lib/shopify/README.md`; no new variables are
   introduced by this document.
 

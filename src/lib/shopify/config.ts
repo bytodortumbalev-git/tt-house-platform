@@ -3,13 +3,13 @@
  * integration. See src/lib/shopify/README.md for the full setup guide.
  *
  * The store domain and Storefront access token are read from
- * NEXT_PUBLIC_-prefixed variables (matching Shopify's own convention for
- * Storefront tokens, which are scoped/rate-limited public tokens, unlike
- * Admin API tokens). This module is still server-only in practice: it is
- * imported exclusively by src/lib/shopify/client.ts and
- * src/lib/content/*.shopify.ts, none of which are ever imported from a
- * "use client" component, so the value is never inlined into a browser
- * bundle despite the prefix.
+ * unprefixed, server-only environment variables. This integration uses a
+ * private Storefront API access token (from the Headless sales channel),
+ * which — unlike a public Storefront token — must never be inlined into a
+ * browser bundle. This module is imported exclusively by
+ * src/lib/shopify/client.ts and src/lib/content/*.shopify.ts, none of
+ * which are ever imported from a "use client" component, so the value
+ * never reaches client code.
  */
 
 export type ContentMode = "local" | "shopify" | "auto";
@@ -21,7 +21,7 @@ export interface ShopifyConfig {
 }
 
 const VALID_MODES: readonly ContentMode[] = ["local", "shopify", "auto"];
-const DEFAULT_API_VERSION = "2024-10";
+const DEFAULT_API_VERSION = "2026-07";
 
 /** Reads and validates SHOPIFY_CONTENT_MODE, defaulting to "local" for anything unset or unrecognized. */
 export function getContentMode(): ContentMode {
@@ -42,8 +42,8 @@ export function getContentMode(): ContentMode {
 
 /** Returns the resolved Shopify config, or null when the store domain/token are not both set. */
 export function getShopifyConfig(): ShopifyConfig | null {
-  const domain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN?.trim();
-  const token = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN?.trim();
+  const domain = process.env.SHOPIFY_STORE_DOMAIN?.trim();
+  const token = process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN?.trim();
 
   if (!domain || !token) {
     return null;

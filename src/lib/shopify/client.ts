@@ -19,6 +19,11 @@ interface GraphQLResponse<T> {
  * import this module from a "use client" component or a route/page
  * component directly — call through src/lib/content/ instead, per
  * docs/shopify-architecture.md.
+ *
+ * Authenticates with a private Storefront API access token (Shopify's
+ * server-side token type), sent via the Shopify-Storefront-Private-Token
+ * header — never the public X-Shopify-Storefront-Access-Token header,
+ * which is meant for browser/mobile clients.
  */
 export async function shopifyFetch<T>(
   config: ShopifyConfig,
@@ -43,7 +48,7 @@ export async function shopifyFetch<T>(
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "X-Shopify-Storefront-Access-Token": config.token,
+          "Shopify-Storefront-Private-Token": config.token,
         },
         body: JSON.stringify({ query, variables }),
         signal: controller.signal,

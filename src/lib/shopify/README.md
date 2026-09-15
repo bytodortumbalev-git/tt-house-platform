@@ -32,38 +32,40 @@ from `src/lib/shopify/` directly, and never from `src/data/` directly.
 See `.env.example` at the project root. Copy it to `.env.local` (already
 gitignored) and fill in real values there — never commit credentials.
 
-| Variable                                      | Required for             | Notes                                                                 |
-| --------------------------------------------- | ------------------------ | --------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN`            | `shopify` / `auto` modes | Your `*.myshopify.com` domain, no protocol.                           |
-| `NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN` | `shopify` / `auto` modes | See "Creating a Storefront API access token" below.                   |
-| `SHOPIFY_STOREFRONT_API_VERSION`              | optional                 | Defaults to `2024-10`.                                                |
-| `SHOPIFY_CONTENT_MODE`                        | optional                 | `local` (default) \| `shopify` \| `auto` — see "Content modes" below. |
+| Variable                           | Required for             | Notes                                                                 |
+| ---------------------------------- | ------------------------ | --------------------------------------------------------------------- |
+| `SHOPIFY_STORE_DOMAIN`             | `shopify` / `auto` modes | Your `*.myshopify.com` domain, no protocol.                           |
+| `SHOPIFY_STOREFRONT_PRIVATE_TOKEN` | `shopify` / `auto` modes | See "Creating a Storefront API access token" below.                   |
+| `SHOPIFY_STOREFRONT_API_VERSION`   | optional                 | Defaults to `2026-07`.                                                |
+| `SHOPIFY_CONTENT_MODE`             | optional                 | `local` (default) \| `shopify` \| `auto` — see "Content modes" below. |
 
-**Why the `NEXT_PUBLIC_` prefix on a "secret"?** Shopify Storefront API
-tokens are, by Shopify's own design, public/scoped tokens meant to be
-usable from a browser (unlike Admin API tokens) — this is the standard
-naming Shopify's own headless starters use. This codebase still never
-sends the token to the browser: `src/lib/shopify/client.ts` is only ever
-imported by server-only modules (`src/lib/content/*.shopify.ts`), which
-are in turn only imported by Server Components and route files, never by
-a `"use client"` component. Next.js only inlines a `NEXT_PUBLIC_` value
-into code that actually ships to the browser — since that never happens
-here, the prefix is inert in practice. `shopifyFetch` also throws if it
-is ever somehow invoked with `window` defined, as a second guard.
+**Server-only, on purpose.** This integration uses a **private** Storefront
+API access token — Shopify's server-side token type, sent via the
+`Shopify-Storefront-Private-Token` header — not the public token type
+meant for browser/mobile clients (`X-Shopify-Storefront-Access-Token`).
+Neither environment variable carries a `NEXT_PUBLIC_` prefix, so Next.js
+never inlines it into a browser bundle. `src/lib/shopify/client.ts` is
+only ever imported by server-only modules (`src/lib/content/*.shopify.ts`),
+which are in turn only imported by Server Components and route files,
+never by a `"use client"` component. `shopifyFetch` also throws if it is
+ever somehow invoked with `window` defined, as a second guard.
 
 ## Creating a Storefront API access token
 
-1. In Shopify Admin, go to **Settings → Apps and sales channels → Develop
-   apps** (enable custom app development first if you haven't already).
-2. Create an app (e.g. "TT House Storefront").
-3. Under **API credentials → Storefront API**, select the scopes this
-   site needs: `unauthenticated_read_product_listings`,
-   `unauthenticated_read_product_inventory`,
-   `unauthenticated_read_collection_listings`.
-4. Install the app, then copy the **Storefront API access token** (not
-   the Admin API token) into `NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN`.
+1. In Shopify Admin, go to **Settings → Apps and sales channels**, and add
+   the **Headless** sales channel if it isn't already installed. Headless
+   issues a private (and public) Storefront API access token per
+   storefront it manages.
+2. Create (or select) a storefront in the Headless channel for this site.
+3. Under that storefront's API credentials, grant only the scope this
+   site needs: `unauthenticated_read_product_listings`.
+4. Copy the **private** Storefront API access token (not the public token,
+   and not an Admin API token) into `SHOPIFY_STOREFRONT_PRIVATE_TOKEN`.
+   Treat it as a secret: set it as a server-only environment variable in
+   Vercel (or your host), never commit it, and never reference it from
+   client-side code.
 5. Copy your store domain (`your-store.myshopify.com`) into
-   `NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN`.
+   `SHOPIFY_STORE_DOMAIN`.
 
 No Admin API token is used anywhere in this codebase — see "Scope
 control" in the Sprint 7 brief and `docs/shopify-architecture.md`
@@ -77,7 +79,7 @@ Set `SHOPIFY_CONTENT_MODE` in your environment:
   needed. This is what a fresh `git clone` gets with no `.env.local` at
   all, and what CI/build-preview environments should generally use.
 - **`shopify`** — requires valid configuration. If
-  `NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN` / `NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN`
+  `SHOPIFY_STORE_DOMAIN` / `SHOPIFY_STOREFRONT_PRIVATE_TOKEN`
   are missing, every content call throws a `ShopifyConfigError` — a
   build or request in this mode fails loudly rather than silently
   serving placeholder content.
