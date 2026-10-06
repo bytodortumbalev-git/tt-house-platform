@@ -5,6 +5,7 @@ import {
   Caption,
   Metadata,
   Link,
+  Image,
   MediaPlaceholder,
 } from "@/components/elements";
 import { getCurrentChapter, getObjectsByChapter } from "@/lib/content";
@@ -26,17 +27,24 @@ export async function HomeFeaturedObject() {
     return null;
   }
 
+  const primaryMedia = featuredObject.media[0];
+
   return (
     <Section tone="surface" spacing="xl" className="border-b border-border">
       <div className="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-16">
         <div className="lg:col-span-7">
-          <MediaPlaceholder
-            aspect="portrait"
-            label={
-              featuredObject.media[0]?.alt ??
-              `${featuredObject.title} — Object image`
-            }
-          />
+          {primaryMedia?.url ? (
+            <Image
+              src={primaryMedia.url}
+              alt={primaryMedia.alt}
+              aspect="portrait"
+            />
+          ) : (
+            <MediaPlaceholder
+              aspect="portrait"
+              label={primaryMedia?.alt ?? `${featuredObject.title} — Object image`}
+            />
+          )}
         </div>
         <div className="flex flex-col gap-6 lg:col-span-5">
           <Metadata>Featured Object</Metadata>

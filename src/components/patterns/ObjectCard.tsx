@@ -1,5 +1,11 @@
 import NextLink from "next/link";
-import { Heading, Body, Tag, MediaPlaceholder } from "@/components/elements";
+import {
+  Heading,
+  Body,
+  Tag,
+  Image,
+  MediaPlaceholder,
+} from "@/components/elements";
 import type { TTObject } from "@/types/object";
 
 export interface ObjectCardProps {
@@ -13,17 +19,27 @@ export interface ObjectCardProps {
  */
 export function ObjectCard({ object }: ObjectCardProps) {
   const isArchived = object.availability === "archived";
+  const primaryMedia = object.media[0];
 
   return (
     <NextLink
       href={`/objects/${object.handle}`}
       className="flex flex-col gap-4 opacity-100 transition-opacity duration-fast ease-standard hover:opacity-80"
     >
-      <MediaPlaceholder
-        aspect="portrait"
-        label={object.media[0]?.alt ?? `${object.title} — Object image`}
-        muted={isArchived}
-      />
+      {primaryMedia?.url ? (
+        <Image
+          src={primaryMedia.url}
+          alt={primaryMedia.alt}
+          aspect="portrait"
+          className={isArchived ? "opacity-70" : undefined}
+        />
+      ) : (
+        <MediaPlaceholder
+          aspect="portrait"
+          label={primaryMedia?.alt ?? `${object.title} — Object image`}
+          muted={isArchived}
+        />
+      )}
       <div className="flex flex-col gap-2">
         <Heading level={3}>{object.title}</Heading>
         <Body size="sm" className="text-foreground/80">

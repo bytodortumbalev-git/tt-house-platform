@@ -1,7 +1,7 @@
 import type { ElementType, HTMLAttributes } from "react";
 import { cx } from "@/lib/cx";
 
-const MEDIA_ASPECTS = {
+export const MEDIA_ASPECTS = {
   portrait: "aspect-[3/4]",
   landscape: "aspect-[16/10]",
   square: "aspect-square",

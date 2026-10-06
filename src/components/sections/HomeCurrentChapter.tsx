@@ -4,6 +4,7 @@ import {
   Body,
   Metadata,
   Link,
+  Image,
   MediaPlaceholder,
 } from "@/components/elements";
 import { getCurrentChapter } from "@/lib/content";
@@ -20,10 +21,18 @@ export async function HomeCurrentChapter() {
     <Section spacing="xl" className="border-b border-border">
       <div className="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-16">
         <div className="lg:col-span-7">
-          <MediaPlaceholder
-            aspect="landscape"
-            label={currentChapter.heroMedia.alt}
-          />
+          {currentChapter.heroMedia.url ? (
+            <Image
+              src={currentChapter.heroMedia.url}
+              alt={currentChapter.heroMedia.alt}
+              aspect="landscape"
+            />
+          ) : (
+            <MediaPlaceholder
+              aspect="landscape"
+              label={currentChapter.heroMedia.alt}
+            />
+          )}
         </div>
         <div className="flex flex-col gap-6 lg:col-span-5">
           <Metadata>{currentChapter.number} — Current Chapter</Metadata>

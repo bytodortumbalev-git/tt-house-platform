@@ -22,7 +22,9 @@ export function ObjectDetail({ object, chapter }: ObjectDetailProps) {
   const hasCommerceInfo = price !== null || object.variants.length > 0;
 
   return (
-    <ObjectDetailShell gallery={<ObjectGallery label={object.title} />}>
+    <ObjectDetailShell
+      gallery={<ObjectGallery label={object.title} media={object.media} />}
+    >
       <Metadata>Object{chapter ? ` — ${chapter.title}` : ""}</Metadata>
       <Heading level={1}>{object.title}</Heading>
       <ObjectPassport object={object} chapterTitle={chapter?.title} />

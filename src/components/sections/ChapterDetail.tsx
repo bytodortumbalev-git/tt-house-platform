@@ -1,5 +1,5 @@
 import { Section } from "@/components/layout";
-import { Heading, Body, MediaPlaceholder } from "@/components/elements";
+import { Heading, Body, Image, MediaPlaceholder } from "@/components/elements";
 import {
   EditorialDetailShell,
   ArchivedNotice,
@@ -24,10 +24,19 @@ export function ChapterDetail({ chapter, objects }: ChapterDetailProps) {
         title={chapter.title}
         media={
           !incomplete ? (
-            <MediaPlaceholder
-              aspect="landscape"
-              label={chapter.heroMedia.alt}
-            />
+            chapter.heroMedia.url ? (
+              <Image
+                src={chapter.heroMedia.url}
+                alt={chapter.heroMedia.alt}
+                aspect="landscape"
+                priority
+              />
+            ) : (
+              <MediaPlaceholder
+                aspect="landscape"
+                label={chapter.heroMedia.alt}
+              />
+            )
           ) : undefined
         }
       >
